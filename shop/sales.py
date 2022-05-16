@@ -1,5 +1,5 @@
 from email import message
-from time import sleep
+from time import sleep, time
 import requests
 import webbrowser
 
@@ -7,7 +7,8 @@ class Sales:
     def __init__(self) -> None:
         self.items = []
         self.headers = self.prepare_headers()
-        self.wait_time = 10
+        self.wait_time = 60
+        self.max_duration_hour = 1
         pass
     
     def add_items(self, items):        
@@ -17,15 +18,24 @@ class Sales:
 
     def set_wait_time(self, wait_time):
         self.wait_time = wait_time
+    
+    def set_max_duration_hour(self, duration):
+        self.max_duration_hour = duration
+        print(self.max_duration_hour)
 
-    def run(self):        
-        while True:
+    def run(self):
+        start_time = time()
+        while True:            
+            if time() - start_time > self.max_duration_hour * 3600:
+                break
+
             if self.all_items_available():
                 break
             else:
                 self.udpate_items()
             
-            sleep(self.wait_time)                                    
+            sleep(self.wait_time)
+
         
     def all_items_available(self):
         for item in self.items:
